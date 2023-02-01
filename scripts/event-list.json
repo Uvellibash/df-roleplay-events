@@ -1,0 +1,60 @@
+{
+  "$schema": "./events-schema.json",
+  "events":[
+    {
+      "id":"event_making_friends",
+      "name":"Making friends",
+      "comment":"Example event. Dwarf who values friendship wants to make more friends.",
+      "trigger_conditions":[
+        "no_relationship_between(unit_ref(source),unit_ref(target))",
+        "is_sane(unit_ref(target))",
+        "more(get_age(unit_ref(target)),12)",
+        "more(get_age(unit_ref(source)),12)",
+        "more(personality_facet(unit_ref(source),FRIENDLINESS),60)",
+        "more(personality_belief(unit_ref(source),FRIENDSHIP),25)",
+        "more(personality_belief(unit_ref(target),FRIENDSHIP),10)"
+      ],
+      "text_substitutions" : [
+        {"token":"{TARGET_FULL_NAME}", "expr":"get_full_name(unit_ref(target))"},
+        {"token":"{TARGET_OBJECTIVE_CASE}", "expr":"get_himher(unit_ref(target))"}
+      ],
+      "text": "Making friends is fun! And I just should have one more...\n{TARGET_FULL_NAME}, you are my next target!",
+      "options": [
+        {"text":"Flatter {TARGET_OBJECTIVE_CASE}!",
+         "trigger_conditions":[],
+         "challenge_function":"challenge_flatter(unit_ref(source),unit_ref(target))",
+         "challenge_outcomes": {
+            "on_critical_fail":"event_fail_flatter",
+            "on_fail":"event_fail_flatter",
+            "on_success":"event_success_flatter",
+            "on_critical_success":"event_success_flatter_critical"
+          }
+        }
+      ]
+    },
+    {
+      "id":"event_fail_flatter",
+      "name": "No effect",
+      "before_event": ["add_skill_xp(unit_ref(source),flatter,50)"],
+      "trigger_conditions" : ["false"],
+      "text" : "Looks like my flattering attempts had no effect.",
+      "options" : [{"text" : "It could be worse."}]
+    },
+    { "id":"event_success_flatter",
+      "name": "Flatterer",
+      "before_event": ["add_skill_xp(unit_ref(source),flatter,100)",
+                       "improve_relationship(unit_ref(source),unit_ref(target))"],
+      "text": "I can see my words had desired effect",
+      "trigger_conditions": ["false"],
+      "options": []
+    },
+    { "id":"event_success_flatter_critical",
+      "name": "Hit the spot",
+      "before_event": ["add_skill_xp(unit_ref(source),flatter,200)",
+                       "improve_relationship(unit_ref(source),unit_ref(target))"],
+      "text": "",
+      "trigger_conditions": ["false"],
+      "options": [{"text":"I feel great!"}]
+    }
+  ]
+}

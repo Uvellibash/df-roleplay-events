@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft-06/schema",
+  "title": "Event List",
+  "type": "object",
+  "properties": {
+    "events": {
+      "type": "array",
+      "description": "List of possible events.",
+      "items": {
+        "type": "object",
+        "title": "Event",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Displayed name of event"
+          },
+          "trigger_conditions" : {
+            "type": "array",
+            "description": "Every requirement that MUST be met before event HAD CHANCE to happen",
+            "items":{"type": "string"}
+          },
+          "weight": {
+            "type" : "integer",
+            "description": "If multiple events have a chance to happen, what is probability of this event?"
+          },
+          "cooldown_days": {
+            "type" : "integer",
+            "description": "How many days should pass before event can happen again. Negative if event should only happen once per roleplay."
+          },
+          "before_event": {
+            "type": "array",
+            "description": "What should happen if event fires before event window is shown."
+          },
+          "text_substitutions" : {
+            "type": "array",
+            "description": "What constants are needed to be substituted in text blocks."
+          },
+          "text": {
+            "type":"string",
+            "description": "Event window text with substituted strings."
+          },
+          "options": {
+            "type": "array",
+            "description": "What player can choose.",
+            "items": {
+              "type": "object"
+
+            }
+          }
+        },
+        "required": ["id","name","text","options","trigger_conditions"]
+      }
+    }
+  },
+  "defs": {
+  }
+}
+
